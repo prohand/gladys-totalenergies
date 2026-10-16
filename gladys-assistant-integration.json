@@ -1,0 +1,1786 @@
+{
+  "manifest_version": 1,
+  "type": "device",
+  "name": "TotalEnergies",
+  "description": {
+    "en": "TotalEnergies electricity offers: contracts, tariff periods, prices and Éclair days.",
+    "fr": "Offres d'électricité TotalEnergies : contrats, périodes tarifaires, prix et jours Éclair.",
+    "de": "TotalEnergies-Stromangebote: Verträge, Tarifzeiten, Preise und Éclair-Tage.",
+    "es": "Ofertas de electricidad TotalEnergies: contratos, periodos tarifarios, precios y días Éclair."
+  },
+  "version": "0.0.0",
+  "docker_image": "ghcr.io/prohand/gladys-totalenergies:0.0.0",
+  "gladys_version": ">=5.2.0",
+  "cover_image": "https://raw.githubusercontent.com/prohand/gladys-totalenergies/main/cover.png",
+  "categories": ["energy"],
+  "transports": ["local"],
+  "config_schema": [
+    {
+      "key": "intro",
+      "type": "section",
+      "label": {
+        "en": "Getting started",
+        "fr": "Pour commencer",
+        "de": "Erste Schritte",
+        "es": "Primeros pasos"
+      },
+      "description": {
+        "en": "1. Open Energy > Contracts in Gladys and create your contract from one of the TotalEnergies templates of this integration, with the prices of your bill. 2. Come back to the Discovery tab: one tariff device per contract appears, with its current period and price. Everything is computed inside the integration: no TotalEnergies account is needed.",
+        "fr": "1. Ouvrez Énergie > Contrats dans Gladys et créez votre contrat à partir d'un des modèles TotalEnergies de cette intégration, avec les prix de votre facture. 2. Revenez dans l'onglet Découverte : un appareil tarif par contrat apparaît, avec sa période et son prix en cours. Tout est calculé dans l'intégration : aucun compte TotalEnergies n'est nécessaire.",
+        "de": "1. Öffnen Sie in Gladys Energie > Verträge und legen Sie Ihren Vertrag aus einer der TotalEnergies-Vorlagen dieser Integration an, mit den Preisen Ihrer Rechnung. 2. Kehren Sie zum Tab Erkennung zurück: Pro Vertrag erscheint ein Tarifgerät mit aktueller Tarifzeit und aktuellem Preis. Alles wird in der Integration berechnet: Ein TotalEnergies-Konto ist nicht nötig.",
+        "es": "1. Abra Energía > Contratos en Gladys y cree su contrato a partir de una de las plantillas TotalEnergies de esta integración, con los precios de su factura. 2. Vuelva a la pestaña Descubrimiento: aparece un dispositivo de tarifa por contrato, con su periodo y su precio actuales. Todo se calcula en la integración: no hace falta ninguna cuenta TotalEnergies."
+      },
+      "links": [
+        {
+          "url": "https://www.totalenergies.fr/particuliers/electricite/offres-d-electricite",
+          "label": {
+            "en": "TotalEnergies electricity offers",
+            "fr": "Offres d'électricité TotalEnergies",
+            "de": "TotalEnergies-Stromangebote",
+            "es": "Ofertas de electricidad TotalEnergies"
+          }
+        },
+        {
+          "url": "https://github.com/prohand/gladys-totalenergies/blob/main/docs/en.md",
+          "label": {
+            "en": "Integration documentation",
+            "fr": "Documentation de l'intégration",
+            "de": "Dokumentation der Integration",
+            "es": "Documentación de la integración"
+          }
+        }
+      ]
+    },
+    {
+      "key": "vigilance_notice_minutes",
+      "type": "number",
+      "label": {
+        "en": "Vigilance warning (minutes)",
+        "fr": "Alerte avant vigilance (minutes)",
+        "de": "Vorwarnung Wachsamkeit (Minuten)",
+        "es": "Aviso antes de vigilancia (minutos)"
+      },
+      "description": {
+        "en": "Heures Eco+: how many minutes before each vigilance slot the \"Vigilance hours soon\" trigger fires.",
+        "fr": "Heures Eco+ : combien de minutes avant chaque plage de vigilance le déclencheur « Heures de vigilance bientôt » se déclenche.",
+        "de": "Heures Eco+: Wie viele Minuten vor jedem Wachsamkeitsfenster der Auslöser „Wachsamkeitsstunden bald“ auslöst.",
+        "es": "Heures Eco+: cuántos minutos antes de cada franja de vigilancia se dispara el activador «Horas de vigilancia pronto»."
+      },
+      "placeholder": {
+        "en": "e.g. 60",
+        "fr": "ex. 60",
+        "de": "z. B. 60",
+        "es": "p. ej. 60"
+      },
+      "required": false,
+      "default": 60,
+      "min": 5,
+      "max": 720
+    }
+  ],
+  "actions": [
+    {
+      "key": "list_contracts",
+      "label": {
+        "en": "Show my TotalEnergies contracts",
+        "fr": "Voir mes contrats TotalEnergies",
+        "de": "Meine TotalEnergies-Verträge anzeigen",
+        "es": "Ver mis contratos TotalEnergies"
+      },
+      "description": {
+        "en": "Lists the Gladys energy contracts created from the templates of this integration, with their current period and price.",
+        "fr": "Liste les contrats d'énergie Gladys créés à partir des modèles de cette intégration, avec leur période et leur prix en cours.",
+        "de": "Listet die aus den Vorlagen dieser Integration angelegten Gladys-Energieverträge mit aktueller Tarifzeit und aktuellem Preis auf.",
+        "es": "Lista los contratos de energía de Gladys creados con las plantillas de esta integración, con su periodo y su precio actuales."
+      },
+      "timeout_seconds": 15
+    },
+    {
+      "key": "declare_eclair_day",
+      "label": {
+        "en": "Declare an Éclair day",
+        "fr": "Déclarer un jour Éclair",
+        "de": "Éclair-Tag melden",
+        "es": "Declarar un día Éclair"
+      },
+      "description": {
+        "en": "Heures Eco+: enter the Éclair day TotalEnergies announced by e-mail or text message.",
+        "fr": "Heures Eco+ : saisissez le jour Éclair annoncé par TotalEnergies par e-mail ou SMS.",
+        "de": "Heures Eco+: Geben Sie den von TotalEnergies per E-Mail oder SMS angekündigten Éclair-Tag ein.",
+        "es": "Heures Eco+: introduzca el día Éclair anunciado por TotalEnergies por correo o SMS."
+      },
+      "timeout_seconds": 15,
+      "fields": [
+        {
+          "key": "date",
+          "type": "string",
+          "label": {
+            "en": "Date",
+            "fr": "Date",
+            "de": "Datum",
+            "es": "Fecha"
+          },
+          "description": {
+            "en": "Day to declare, as YYYY-MM-DD. Empty: tomorrow.",
+            "fr": "Jour à déclarer, au format AAAA-MM-JJ. Vide : demain.",
+            "de": "Zu meldender Tag im Format JJJJ-MM-TT. Leer: morgen.",
+            "es": "Día a declarar, con el formato AAAA-MM-DD. Vacío: mañana."
+          },
+          "placeholder": {
+            "en": "e.g. 2026-11-20",
+            "fr": "ex. 2026-11-20",
+            "de": "z. B. 2026-11-20",
+            "es": "p. ej. 2026-11-20"
+          },
+          "required": false
+        }
+      ]
+    },
+    {
+      "key": "cancel_eclair_day",
+      "label": {
+        "en": "Cancel an Éclair day",
+        "fr": "Annuler un jour Éclair",
+        "de": "Éclair-Tag zurücknehmen",
+        "es": "Anular un día Éclair"
+      },
+      "description": {
+        "en": "Turns a day declared by mistake back into a normal day.",
+        "fr": "Remet en jour normal un jour déclaré par erreur.",
+        "de": "Macht einen versehentlich gemeldeten Tag wieder zu einem normalen Tag.",
+        "es": "Vuelve a convertir en día normal un día declarado por error."
+      },
+      "timeout_seconds": 15,
+      "fields": [
+        {
+          "key": "date",
+          "type": "string",
+          "label": {
+            "en": "Date",
+            "fr": "Date",
+            "de": "Datum",
+            "es": "Fecha"
+          },
+          "description": {
+            "en": "Day to declare, as YYYY-MM-DD. Empty: tomorrow.",
+            "fr": "Jour à déclarer, au format AAAA-MM-JJ. Vide : demain.",
+            "de": "Zu meldender Tag im Format JJJJ-MM-TT. Leer: morgen.",
+            "es": "Día a declarar, con el formato AAAA-MM-DD. Vacío: mañana."
+          },
+          "placeholder": {
+            "en": "e.g. 2026-11-20",
+            "fr": "ex. 2026-11-20",
+            "de": "z. B. 2026-11-20",
+            "es": "p. ej. 2026-11-20"
+          },
+          "required": false
+        }
+      ]
+    }
+  ],
+  "energy_contracts": {
+    "templates": [
+      {
+        "key": "access-base",
+        "name": {
+          "en": "TotalEnergies Access – Base",
+          "fr": "TotalEnergies Access – Base",
+          "de": "TotalEnergies Access – Base",
+          "es": "TotalEnergies Access – Base"
+        },
+        "description": {
+          "en": "Price indexed on the regulated tariff (TRV). Prices pre-filled from the TotalEnergies grid of 1 October 2026 (9 kVA, incl. taxes): check them against your own bill.",
+          "fr": "Prix indexé sur le tarif réglementé (TRV). Prix pré-remplis d'après la grille TotalEnergies du 1er octobre 2026 (9 kVA, TTC) : vérifiez-les sur votre facture.",
+          "de": "An den regulierten Tarif (TRV) gekoppelter Preis. Preise vorausgefüllt nach dem TotalEnergies-Preisblatt vom 1. Oktober 2026 (9 kVA, brutto): prüfen Sie sie anhand Ihrer Rechnung.",
+          "es": "Precio indexado a la tarifa regulada (TRV). Precios rellenados según la tarifa de TotalEnergies del 1 de octubre de 2026 (9 kVA, con impuestos): compruébelos en su factura."
+        },
+        "country": "FR",
+        "currency": "EUR",
+        "timezone": "Europe/Paris",
+        "pricing_mode": "rules",
+        "version": "2026-10-01",
+        "inputs": [
+          {
+            "key": "price_base",
+            "type": "number",
+            "unit": "EUR/kWh",
+            "label": {
+              "en": "Base price",
+              "fr": "Prix du kWh (Base)",
+              "de": "Preis pro kWh (Base)",
+              "es": "Precio del kWh (Base)"
+            },
+            "description": {
+              "en": "Price incl. taxes, as printed on your price grid or bill.",
+              "fr": "Prix TTC, tel qu'indiqué sur votre grille tarifaire ou votre facture.",
+              "de": "Bruttopreis, wie auf Ihrem Preisblatt oder Ihrer Rechnung angegeben.",
+              "es": "Precio con impuestos, tal como figura en su tarifa o su factura."
+            },
+            "required": true,
+            "default": 0.1823
+          },
+          {
+            "key": "subscription",
+            "type": "number",
+            "unit": "EUR/month",
+            "label": {
+              "en": "Monthly subscription",
+              "fr": "Abonnement mensuel",
+              "de": "Monatliche Grundgebühr",
+              "es": "Suscripción mensual"
+            },
+            "description": {
+              "en": "Subscription incl. taxes, per month, for your subscribed power (kVA).",
+              "fr": "Abonnement TTC par mois, pour votre puissance souscrite (kVA).",
+              "de": "Grundgebühr brutto pro Monat für Ihre vertraglich vereinbarte Leistung (kVA).",
+              "es": "Suscripción con impuestos por mes, para su potencia contratada (kVA)."
+            },
+            "required": true,
+            "default": 19.88
+          }
+        ],
+        "tariff": {
+          "tariff_version": 1,
+          "components": [
+            {
+              "key": "energy",
+              "kind": "consumption",
+              "label": "Energie",
+              "fallback": {
+                "label": "Base",
+                "price": "{{input:price_base}}"
+              }
+            },
+            {
+              "key": "subscription",
+              "kind": "fixed",
+              "label": "Abonnement",
+              "amount": "{{input:subscription}}",
+              "per": "month"
+            }
+          ]
+        }
+      },
+      {
+        "key": "access-hphc",
+        "name": {
+          "en": "TotalEnergies Access – HP/HC",
+          "fr": "TotalEnergies Access – HP/HC",
+          "de": "TotalEnergies Access – HT/NT",
+          "es": "TotalEnergies Access – Punta/Valle"
+        },
+        "description": {
+          "en": "Price indexed on the regulated tariff (TRV). Prices pre-filled from the TotalEnergies grid of 1 October 2026 (9 kVA, incl. taxes): check them against your own bill.",
+          "fr": "Prix indexé sur le tarif réglementé (TRV). Prix pré-remplis d'après la grille TotalEnergies du 1er octobre 2026 (9 kVA, TTC) : vérifiez-les sur votre facture.",
+          "de": "An den regulierten Tarif (TRV) gekoppelter Preis. Preise vorausgefüllt nach dem TotalEnergies-Preisblatt vom 1. Oktober 2026 (9 kVA, brutto): prüfen Sie sie anhand Ihrer Rechnung.",
+          "es": "Precio indexado a la tarifa regulada (TRV). Precios rellenados según la tarifa de TotalEnergies del 1 de octubre de 2026 (9 kVA, con impuestos): compruébelos en su factura."
+        },
+        "country": "FR",
+        "currency": "EUR",
+        "timezone": "Europe/Paris",
+        "pricing_mode": "rules",
+        "version": "2026-10-01",
+        "inputs": [
+          {
+            "key": "price_hp",
+            "type": "number",
+            "unit": "EUR/kWh",
+            "label": {
+              "en": "Peak-hour price",
+              "fr": "Prix Heures Pleines",
+              "de": "Preis Hauptzeit",
+              "es": "Precio horas punta"
+            },
+            "description": {
+              "en": "Price incl. taxes, as printed on your price grid or bill.",
+              "fr": "Prix TTC, tel qu'indiqué sur votre grille tarifaire ou votre facture.",
+              "de": "Bruttopreis, wie auf Ihrem Preisblatt oder Ihrer Rechnung angegeben.",
+              "es": "Precio con impuestos, tal como figura en su tarifa o su factura."
+            },
+            "required": true,
+            "default": 0.1965
+          },
+          {
+            "key": "price_hc",
+            "type": "number",
+            "unit": "EUR/kWh",
+            "label": {
+              "en": "Off-peak price",
+              "fr": "Prix Heures Creuses",
+              "de": "Preis Nebenzeit",
+              "es": "Precio horas valle"
+            },
+            "description": {
+              "en": "Price incl. taxes, as printed on your price grid or bill.",
+              "fr": "Prix TTC, tel qu'indiqué sur votre grille tarifaire ou votre facture.",
+              "de": "Bruttopreis, wie auf Ihrem Preisblatt oder Ihrer Rechnung angegeben.",
+              "es": "Precio con impuestos, tal como figura en su tarifa o su factura."
+            },
+            "required": true,
+            "default": 0.1467
+          },
+          {
+            "key": "off_peak_slots",
+            "type": "time_intervals",
+            "default": [["22:00", "06:00"]],
+            "label": {
+              "en": "Off-peak hours",
+              "fr": "Heures creuses",
+              "de": "Nebenzeiten",
+              "es": "Horas valle"
+            },
+            "description": {
+              "en": "Your off-peak slots, set by Enedis for your meter: they are printed on your bill.",
+              "fr": "Vos plages d'heures creuses, fixées par Enedis pour votre compteur : elles figurent sur votre facture.",
+              "de": "Ihre Nebenzeiten, von Enedis für Ihren Zähler festgelegt: Sie stehen auf Ihrer Rechnung.",
+              "es": "Sus franjas de horas valle, fijadas por Enedis para su contador: figuran en su factura."
+            },
+            "required": true
+          },
+          {
+            "key": "subscription",
+            "type": "number",
+            "unit": "EUR/month",
+            "label": {
+              "en": "Monthly subscription",
+              "fr": "Abonnement mensuel",
+              "de": "Monatliche Grundgebühr",
+              "es": "Suscripción mensual"
+            },
+            "description": {
+              "en": "Subscription incl. taxes, per month, for your subscribed power (kVA).",
+              "fr": "Abonnement TTC par mois, pour votre puissance souscrite (kVA).",
+              "de": "Grundgebühr brutto pro Monat für Ihre vertraglich vereinbarte Leistung (kVA).",
+              "es": "Suscripción con impuestos por mes, para su potencia contratada (kVA)."
+            },
+            "required": true,
+            "default": 19.88
+          }
+        ],
+        "tariff": {
+          "tariff_version": 1,
+          "components": [
+            {
+              "key": "energy",
+              "kind": "consumption",
+              "label": "Energie",
+              "rules": [
+                {
+                  "label": "HC",
+                  "when": {
+                    "time": "{{input:off_peak_slots}}"
+                  },
+                  "price": "{{input:price_hc}}"
+                }
+              ],
+              "fallback": {
+                "label": "HP",
+                "price": "{{input:price_hp}}"
+              }
+            },
+            {
+              "key": "subscription",
+              "kind": "fixed",
+              "label": "Abonnement",
+              "amount": "{{input:subscription}}",
+              "per": "month"
+            }
+          ]
+        }
+      },
+      {
+        "key": "heures-eco-base",
+        "name": {
+          "en": "TotalEnergies Heures Eco – Base",
+          "fr": "TotalEnergies Heures Eco – Base",
+          "de": "TotalEnergies Heures Eco – Base",
+          "es": "TotalEnergies Heures Eco – Base"
+        },
+        "description": {
+          "en": "Price indexed on the regulated tariff (TRV). Prices pre-filled from the TotalEnergies grid of 1 October 2026 (9 kVA, incl. taxes): check them against your own bill.",
+          "fr": "Prix indexé sur le tarif réglementé (TRV). Prix pré-remplis d'après la grille TotalEnergies du 1er octobre 2026 (9 kVA, TTC) : vérifiez-les sur votre facture.",
+          "de": "An den regulierten Tarif (TRV) gekoppelter Preis. Preise vorausgefüllt nach dem TotalEnergies-Preisblatt vom 1. Oktober 2026 (9 kVA, brutto): prüfen Sie sie anhand Ihrer Rechnung.",
+          "es": "Precio indexado a la tarifa regulada (TRV). Precios rellenados según la tarifa de TotalEnergies del 1 de octubre de 2026 (9 kVA, con impuestos): compruébelos en su factura."
+        },
+        "country": "FR",
+        "currency": "EUR",
+        "timezone": "Europe/Paris",
+        "pricing_mode": "rules",
+        "version": "2026-10-01",
+        "inputs": [
+          {
+            "key": "price_base",
+            "type": "number",
+            "unit": "EUR/kWh",
+            "label": {
+              "en": "Base price",
+              "fr": "Prix du kWh (Base)",
+              "de": "Preis pro kWh (Base)",
+              "es": "Precio del kWh (Base)"
+            },
+            "description": {
+              "en": "Price incl. taxes, as printed on your price grid or bill.",
+              "fr": "Prix TTC, tel qu'indiqué sur votre grille tarifaire ou votre facture.",
+              "de": "Bruttopreis, wie auf Ihrem Preisblatt oder Ihrer Rechnung angegeben.",
+              "es": "Precio con impuestos, tal como figura en su tarifa o su factura."
+            },
+            "required": true,
+            "default": 0.1985
+          },
+          {
+            "key": "subscription",
+            "type": "number",
+            "unit": "EUR/month",
+            "label": {
+              "en": "Monthly subscription",
+              "fr": "Abonnement mensuel",
+              "de": "Monatliche Grundgebühr",
+              "es": "Suscripción mensual"
+            },
+            "description": {
+              "en": "Subscription incl. taxes, per month, for your subscribed power (kVA).",
+              "fr": "Abonnement TTC par mois, pour votre puissance souscrite (kVA).",
+              "de": "Grundgebühr brutto pro Monat für Ihre vertraglich vereinbarte Leistung (kVA).",
+              "es": "Suscripción con impuestos por mes, para su potencia contratada (kVA)."
+            },
+            "required": true,
+            "default": 19.88
+          }
+        ],
+        "tariff": {
+          "tariff_version": 1,
+          "components": [
+            {
+              "key": "energy",
+              "kind": "consumption",
+              "label": "Energie",
+              "fallback": {
+                "label": "Base",
+                "price": "{{input:price_base}}"
+              }
+            },
+            {
+              "key": "subscription",
+              "kind": "fixed",
+              "label": "Abonnement",
+              "amount": "{{input:subscription}}",
+              "per": "month"
+            }
+          ]
+        }
+      },
+      {
+        "key": "heures-eco-hphc",
+        "name": {
+          "en": "TotalEnergies Heures Eco – HP/HC",
+          "fr": "TotalEnergies Heures Eco – HP/HC",
+          "de": "TotalEnergies Heures Eco – HT/NT",
+          "es": "TotalEnergies Heures Eco – Punta/Valle"
+        },
+        "description": {
+          "en": "Price indexed on the regulated tariff (TRV). Prices pre-filled from the TotalEnergies grid of 1 October 2026 (9 kVA, incl. taxes): check them against your own bill.",
+          "fr": "Prix indexé sur le tarif réglementé (TRV). Prix pré-remplis d'après la grille TotalEnergies du 1er octobre 2026 (9 kVA, TTC) : vérifiez-les sur votre facture.",
+          "de": "An den regulierten Tarif (TRV) gekoppelter Preis. Preise vorausgefüllt nach dem TotalEnergies-Preisblatt vom 1. Oktober 2026 (9 kVA, brutto): prüfen Sie sie anhand Ihrer Rechnung.",
+          "es": "Precio indexado a la tarifa regulada (TRV). Precios rellenados según la tarifa de TotalEnergies del 1 de octubre de 2026 (9 kVA, con impuestos): compruébelos en su factura."
+        },
+        "country": "FR",
+        "currency": "EUR",
+        "timezone": "Europe/Paris",
+        "pricing_mode": "rules",
+        "version": "2026-10-01",
+        "inputs": [
+          {
+            "key": "price_hp",
+            "type": "number",
+            "unit": "EUR/kWh",
+            "label": {
+              "en": "Peak-hour price",
+              "fr": "Prix Heures Pleines",
+              "de": "Preis Hauptzeit",
+              "es": "Precio horas punta"
+            },
+            "description": {
+              "en": "Price incl. taxes, as printed on your price grid or bill.",
+              "fr": "Prix TTC, tel qu'indiqué sur votre grille tarifaire ou votre facture.",
+              "de": "Bruttopreis, wie auf Ihrem Preisblatt oder Ihrer Rechnung angegeben.",
+              "es": "Precio con impuestos, tal como figura en su tarifa o su factura."
+            },
+            "required": true,
+            "default": 0.2142
+          },
+          {
+            "key": "price_hc",
+            "type": "number",
+            "unit": "EUR/kWh",
+            "label": {
+              "en": "Off-peak price",
+              "fr": "Prix Heures Creuses",
+              "de": "Preis Nebenzeit",
+              "es": "Precio horas valle"
+            },
+            "description": {
+              "en": "Price incl. taxes, as printed on your price grid or bill.",
+              "fr": "Prix TTC, tel qu'indiqué sur votre grille tarifaire ou votre facture.",
+              "de": "Bruttopreis, wie auf Ihrem Preisblatt oder Ihrer Rechnung angegeben.",
+              "es": "Precio con impuestos, tal como figura en su tarifa o su factura."
+            },
+            "required": true,
+            "default": 0.1589
+          },
+          {
+            "key": "off_peak_slots",
+            "type": "time_intervals",
+            "default": [["22:00", "06:00"]],
+            "label": {
+              "en": "Off-peak hours",
+              "fr": "Heures creuses",
+              "de": "Nebenzeiten",
+              "es": "Horas valle"
+            },
+            "description": {
+              "en": "Your off-peak slots, set by Enedis for your meter: they are printed on your bill.",
+              "fr": "Vos plages d'heures creuses, fixées par Enedis pour votre compteur : elles figurent sur votre facture.",
+              "de": "Ihre Nebenzeiten, von Enedis für Ihren Zähler festgelegt: Sie stehen auf Ihrer Rechnung.",
+              "es": "Sus franjas de horas valle, fijadas por Enedis para su contador: figuran en su factura."
+            },
+            "required": true
+          },
+          {
+            "key": "subscription",
+            "type": "number",
+            "unit": "EUR/month",
+            "label": {
+              "en": "Monthly subscription",
+              "fr": "Abonnement mensuel",
+              "de": "Monatliche Grundgebühr",
+              "es": "Suscripción mensual"
+            },
+            "description": {
+              "en": "Subscription incl. taxes, per month, for your subscribed power (kVA).",
+              "fr": "Abonnement TTC par mois, pour votre puissance souscrite (kVA).",
+              "de": "Grundgebühr brutto pro Monat für Ihre vertraglich vereinbarte Leistung (kVA).",
+              "es": "Suscripción con impuestos por mes, para su potencia contratada (kVA)."
+            },
+            "required": true,
+            "default": 19.88
+          }
+        ],
+        "tariff": {
+          "tariff_version": 1,
+          "components": [
+            {
+              "key": "energy",
+              "kind": "consumption",
+              "label": "Energie",
+              "rules": [
+                {
+                  "label": "HC",
+                  "when": {
+                    "time": "{{input:off_peak_slots}}"
+                  },
+                  "price": "{{input:price_hc}}"
+                }
+              ],
+              "fallback": {
+                "label": "HP",
+                "price": "{{input:price_hp}}"
+              }
+            },
+            {
+              "key": "subscription",
+              "kind": "fixed",
+              "label": "Abonnement",
+              "amount": "{{input:subscription}}",
+              "per": "month"
+            }
+          ]
+        }
+      },
+      {
+        "key": "fixe-2-ans-base",
+        "name": {
+          "en": "TotalEnergies Fixe 2 ans – Base",
+          "fr": "TotalEnergies Fixe 2 ans – Base",
+          "de": "TotalEnergies Fixe 2 ans – Base",
+          "es": "TotalEnergies Fixe 2 ans – Base"
+        },
+        "description": {
+          "en": "kWh price fixed for 2 years. Prices pre-filled from the TotalEnergies grid of 1 October 2026 (9 kVA, incl. taxes): check them against your own bill.",
+          "fr": "Prix du kWh fixe pendant 2 ans. Prix pré-remplis d'après la grille TotalEnergies du 1er octobre 2026 (9 kVA, TTC) : vérifiez-les sur votre facture.",
+          "de": "kWh-Preis für 2 Jahre fest. Preise vorausgefüllt nach dem TotalEnergies-Preisblatt vom 1. Oktober 2026 (9 kVA, brutto): prüfen Sie sie anhand Ihrer Rechnung.",
+          "es": "Precio del kWh fijo durante 2 años. Precios rellenados según la tarifa de TotalEnergies del 1 de octubre de 2026 (9 kVA, con impuestos): compruébelos en su factura."
+        },
+        "country": "FR",
+        "currency": "EUR",
+        "timezone": "Europe/Paris",
+        "pricing_mode": "rules",
+        "version": "2026-10-01",
+        "inputs": [
+          {
+            "key": "price_base",
+            "type": "number",
+            "unit": "EUR/kWh",
+            "label": {
+              "en": "Base price",
+              "fr": "Prix du kWh (Base)",
+              "de": "Preis pro kWh (Base)",
+              "es": "Precio del kWh (Base)"
+            },
+            "description": {
+              "en": "Price incl. taxes, as printed on your price grid or bill.",
+              "fr": "Prix TTC, tel qu'indiqué sur votre grille tarifaire ou votre facture.",
+              "de": "Bruttopreis, wie auf Ihrem Preisblatt oder Ihrer Rechnung angegeben.",
+              "es": "Precio con impuestos, tal como figura en su tarifa o su factura."
+            },
+            "required": true,
+            "default": 0.2252
+          },
+          {
+            "key": "subscription",
+            "type": "number",
+            "unit": "EUR/month",
+            "label": {
+              "en": "Monthly subscription",
+              "fr": "Abonnement mensuel",
+              "de": "Monatliche Grundgebühr",
+              "es": "Suscripción mensual"
+            },
+            "description": {
+              "en": "Subscription incl. taxes, per month, for your subscribed power (kVA).",
+              "fr": "Abonnement TTC par mois, pour votre puissance souscrite (kVA).",
+              "de": "Grundgebühr brutto pro Monat für Ihre vertraglich vereinbarte Leistung (kVA).",
+              "es": "Suscripción con impuestos por mes, para su potencia contratada (kVA)."
+            },
+            "required": true,
+            "default": 19.88
+          }
+        ],
+        "tariff": {
+          "tariff_version": 1,
+          "components": [
+            {
+              "key": "energy",
+              "kind": "consumption",
+              "label": "Energie",
+              "fallback": {
+                "label": "Base",
+                "price": "{{input:price_base}}"
+              }
+            },
+            {
+              "key": "subscription",
+              "kind": "fixed",
+              "label": "Abonnement",
+              "amount": "{{input:subscription}}",
+              "per": "month"
+            }
+          ]
+        }
+      },
+      {
+        "key": "fixe-2-ans-hphc",
+        "name": {
+          "en": "TotalEnergies Fixe 2 ans – HP/HC",
+          "fr": "TotalEnergies Fixe 2 ans – HP/HC",
+          "de": "TotalEnergies Fixe 2 ans – HT/NT",
+          "es": "TotalEnergies Fixe 2 ans – Punta/Valle"
+        },
+        "description": {
+          "en": "kWh price fixed for 2 years. Prices pre-filled from the TotalEnergies grid of 1 October 2026 (9 kVA, incl. taxes): check them against your own bill.",
+          "fr": "Prix du kWh fixe pendant 2 ans. Prix pré-remplis d'après la grille TotalEnergies du 1er octobre 2026 (9 kVA, TTC) : vérifiez-les sur votre facture.",
+          "de": "kWh-Preis für 2 Jahre fest. Preise vorausgefüllt nach dem TotalEnergies-Preisblatt vom 1. Oktober 2026 (9 kVA, brutto): prüfen Sie sie anhand Ihrer Rechnung.",
+          "es": "Precio del kWh fijo durante 2 años. Precios rellenados según la tarifa de TotalEnergies del 1 de octubre de 2026 (9 kVA, con impuestos): compruébelos en su factura."
+        },
+        "country": "FR",
+        "currency": "EUR",
+        "timezone": "Europe/Paris",
+        "pricing_mode": "rules",
+        "version": "2026-10-01",
+        "inputs": [
+          {
+            "key": "price_hp",
+            "type": "number",
+            "unit": "EUR/kWh",
+            "label": {
+              "en": "Peak-hour price",
+              "fr": "Prix Heures Pleines",
+              "de": "Preis Hauptzeit",
+              "es": "Precio horas punta"
+            },
+            "description": {
+              "en": "Price incl. taxes, as printed on your price grid or bill.",
+              "fr": "Prix TTC, tel qu'indiqué sur votre grille tarifaire ou votre facture.",
+              "de": "Bruttopreis, wie auf Ihrem Preisblatt oder Ihrer Rechnung angegeben.",
+              "es": "Precio con impuestos, tal como figura en su tarifa o su factura."
+            },
+            "required": true,
+            "default": 0.2435
+          },
+          {
+            "key": "price_hc",
+            "type": "number",
+            "unit": "EUR/kWh",
+            "label": {
+              "en": "Off-peak price",
+              "fr": "Prix Heures Creuses",
+              "de": "Preis Nebenzeit",
+              "es": "Precio horas valle"
+            },
+            "description": {
+              "en": "Price incl. taxes, as printed on your price grid or bill.",
+              "fr": "Prix TTC, tel qu'indiqué sur votre grille tarifaire ou votre facture.",
+              "de": "Bruttopreis, wie auf Ihrem Preisblatt oder Ihrer Rechnung angegeben.",
+              "es": "Precio con impuestos, tal como figura en su tarifa o su factura."
+            },
+            "required": true,
+            "default": 0.1791
+          },
+          {
+            "key": "off_peak_slots",
+            "type": "time_intervals",
+            "default": [["22:00", "06:00"]],
+            "label": {
+              "en": "Off-peak hours",
+              "fr": "Heures creuses",
+              "de": "Nebenzeiten",
+              "es": "Horas valle"
+            },
+            "description": {
+              "en": "Your off-peak slots, set by Enedis for your meter: they are printed on your bill.",
+              "fr": "Vos plages d'heures creuses, fixées par Enedis pour votre compteur : elles figurent sur votre facture.",
+              "de": "Ihre Nebenzeiten, von Enedis für Ihren Zähler festgelegt: Sie stehen auf Ihrer Rechnung.",
+              "es": "Sus franjas de horas valle, fijadas por Enedis para su contador: figuran en su factura."
+            },
+            "required": true
+          },
+          {
+            "key": "subscription",
+            "type": "number",
+            "unit": "EUR/month",
+            "label": {
+              "en": "Monthly subscription",
+              "fr": "Abonnement mensuel",
+              "de": "Monatliche Grundgebühr",
+              "es": "Suscripción mensual"
+            },
+            "description": {
+              "en": "Subscription incl. taxes, per month, for your subscribed power (kVA).",
+              "fr": "Abonnement TTC par mois, pour votre puissance souscrite (kVA).",
+              "de": "Grundgebühr brutto pro Monat für Ihre vertraglich vereinbarte Leistung (kVA).",
+              "es": "Suscripción con impuestos por mes, para su potencia contratada (kVA)."
+            },
+            "required": true,
+            "default": 19.88
+          }
+        ],
+        "tariff": {
+          "tariff_version": 1,
+          "components": [
+            {
+              "key": "energy",
+              "kind": "consumption",
+              "label": "Energie",
+              "rules": [
+                {
+                  "label": "HC",
+                  "when": {
+                    "time": "{{input:off_peak_slots}}"
+                  },
+                  "price": "{{input:price_hc}}"
+                }
+              ],
+              "fallback": {
+                "label": "HP",
+                "price": "{{input:price_hp}}"
+              }
+            },
+            {
+              "key": "subscription",
+              "kind": "fixed",
+              "label": "Abonnement",
+              "amount": "{{input:subscription}}",
+              "per": "month"
+            }
+          ]
+        }
+      },
+      {
+        "key": "charge-heures",
+        "name": {
+          "en": "TotalEnergies Charge'Heures – HP/HC/HSC",
+          "fr": "TotalEnergies Charge'Heures – HP/HC/HSC",
+          "de": "TotalEnergies Charge'Heures – HT/NT/SNT",
+          "es": "TotalEnergies Charge'Heures – P/V/SV"
+        },
+        "description": {
+          "en": "Super off-peak hours from 2 am to 6 am, off-peak hours from 11 pm to 2 am and from 6 am to 7 am, the same every day. Prices pre-filled from the TotalEnergies grid of 1 October 2026 (9 kVA, incl. taxes): check them against your own bill.",
+          "fr": "Heures Super Creuses de 2 h à 6 h, Heures Creuses de 23 h à 2 h et de 6 h à 7 h, tous les jours. Prix pré-remplis d'après la grille TotalEnergies du 1er octobre 2026 (9 kVA, TTC) : vérifiez-les sur votre facture.",
+          "de": "Schwachlastzeit von 2 bis 6 Uhr, Nebenzeit von 23 bis 2 Uhr und von 6 bis 7 Uhr, jeden Tag. Preise vorausgefüllt nach dem TotalEnergies-Preisblatt vom 1. Oktober 2026 (9 kVA, brutto): prüfen Sie sie anhand Ihrer Rechnung.",
+          "es": "Horas supervalle de 2 h a 6 h, horas valle de 23 h a 2 h y de 6 h a 7 h, todos los días. Precios rellenados según la tarifa de TotalEnergies del 1 de octubre de 2026 (9 kVA, con impuestos): compruébelos en su factura."
+        },
+        "country": "FR",
+        "currency": "EUR",
+        "timezone": "Europe/Paris",
+        "pricing_mode": "rules",
+        "version": "2026-10-01",
+        "inputs": [
+          {
+            "key": "price_hp",
+            "type": "number",
+            "unit": "EUR/kWh",
+            "label": {
+              "en": "Peak-hour price",
+              "fr": "Prix Heures Pleines",
+              "de": "Preis Hauptzeit",
+              "es": "Precio horas punta"
+            },
+            "description": {
+              "en": "Price incl. taxes, as printed on your price grid or bill.",
+              "fr": "Prix TTC, tel qu'indiqué sur votre grille tarifaire ou votre facture.",
+              "de": "Bruttopreis, wie auf Ihrem Preisblatt oder Ihrer Rechnung angegeben.",
+              "es": "Precio con impuestos, tal como figura en su tarifa o su factura."
+            },
+            "required": true,
+            "default": 0.2302
+          },
+          {
+            "key": "price_hc",
+            "type": "number",
+            "unit": "EUR/kWh",
+            "label": {
+              "en": "Off-peak price",
+              "fr": "Prix Heures Creuses",
+              "de": "Preis Nebenzeit",
+              "es": "Precio horas valle"
+            },
+            "description": {
+              "en": "Price incl. taxes, as printed on your price grid or bill.",
+              "fr": "Prix TTC, tel qu'indiqué sur votre grille tarifaire ou votre facture.",
+              "de": "Bruttopreis, wie auf Ihrem Preisblatt oder Ihrer Rechnung angegeben.",
+              "es": "Precio con impuestos, tal como figura en su tarifa o su factura."
+            },
+            "required": true,
+            "default": 0.1576
+          },
+          {
+            "key": "price_hsc",
+            "type": "number",
+            "unit": "EUR/kWh",
+            "label": {
+              "en": "Super off-peak price",
+              "fr": "Prix Heures Super Creuses",
+              "de": "Preis Schwachlastzeit",
+              "es": "Precio horas supervalle"
+            },
+            "description": {
+              "en": "Price incl. taxes, as printed on your price grid or bill.",
+              "fr": "Prix TTC, tel qu'indiqué sur votre grille tarifaire ou votre facture.",
+              "de": "Bruttopreis, wie auf Ihrem Preisblatt oder Ihrer Rechnung angegeben.",
+              "es": "Precio con impuestos, tal como figura en su tarifa o su factura."
+            },
+            "required": true,
+            "default": 0.1335
+          },
+          {
+            "key": "subscription",
+            "type": "number",
+            "unit": "EUR/month",
+            "label": {
+              "en": "Monthly subscription",
+              "fr": "Abonnement mensuel",
+              "de": "Monatliche Grundgebühr",
+              "es": "Suscripción mensual"
+            },
+            "description": {
+              "en": "Subscription incl. taxes, per month, for your subscribed power (kVA).",
+              "fr": "Abonnement TTC par mois, pour votre puissance souscrite (kVA).",
+              "de": "Grundgebühr brutto pro Monat für Ihre vertraglich vereinbarte Leistung (kVA).",
+              "es": "Suscripción con impuestos por mes, para su potencia contratada (kVA)."
+            },
+            "required": true,
+            "default": 19.9
+          }
+        ],
+        "tariff": {
+          "tariff_version": 1,
+          "components": [
+            {
+              "key": "energy",
+              "kind": "consumption",
+              "label": "Energie",
+              "rules": [
+                {
+                  "label": "HSC",
+                  "when": {
+                    "time": [["02:00", "06:00"]]
+                  },
+                  "price": "{{input:price_hsc}}"
+                },
+                {
+                  "label": "HC",
+                  "when": {
+                    "time": [
+                      ["23:00", "02:00"],
+                      ["06:00", "07:00"]
+                    ]
+                  },
+                  "price": "{{input:price_hc}}"
+                }
+              ],
+              "fallback": {
+                "label": "HP",
+                "price": "{{input:price_hp}}"
+              }
+            },
+            {
+              "key": "subscription",
+              "kind": "fixed",
+              "label": "Abonnement",
+              "amount": "{{input:subscription}}",
+              "per": "month"
+            }
+          ]
+        }
+      },
+      {
+        "key": "heures-eco-plus",
+        "name": {
+          "en": "TotalEnergies Heures Eco+ – HP/HC/HV",
+          "fr": "TotalEnergies Heures Eco+ – HP/HC/HV",
+          "de": "TotalEnergies Heures Eco+ – HT/NT/WS",
+          "es": "TotalEnergies Heures Eco+ – P/V/HV"
+        },
+        "description": {
+          "en": "20 Éclair days a year (15 October to 15 April) with vigilance hours from 7 am to 3 pm and from 6 pm to 8 pm. Declare each Éclair day announced by TotalEnergies in the integration. Prices pre-filled from the TotalEnergies grid of 1 October 2026 (9 kVA, incl. taxes): check them against your own bill.",
+          "fr": "20 jours Éclair par an (du 15 octobre au 15 avril) avec Heures de Vigilance de 7 h à 15 h et de 18 h à 20 h. Déclarez dans l'intégration chaque jour Éclair annoncé par TotalEnergies. Prix pré-remplis d'après la grille TotalEnergies du 1er octobre 2026 (9 kVA, TTC) : vérifiez-les sur votre facture.",
+          "de": "20 Éclair-Tage pro Jahr (15. Oktober bis 15. April) mit Wachsamkeitsstunden von 7 bis 15 Uhr und von 18 bis 20 Uhr. Melden Sie jeden von TotalEnergies angekündigten Éclair-Tag in der Integration. Preise vorausgefüllt nach dem TotalEnergies-Preisblatt vom 1. Oktober 2026 (9 kVA, brutto): prüfen Sie sie anhand Ihrer Rechnung.",
+          "es": "20 días Éclair al año (del 15 de octubre al 15 de abril) con horas de vigilancia de 7 h a 15 h y de 18 h a 20 h. Declare en la integración cada día Éclair anunciado por TotalEnergies. Precios rellenados según la tarifa de TotalEnergies del 1 de octubre de 2026 (9 kVA, con impuestos): compruébelos en su factura."
+        },
+        "country": "FR",
+        "currency": "EUR",
+        "timezone": "Europe/Paris",
+        "pricing_mode": "rules",
+        "version": "2026-10-01",
+        "calendars": ["eclair-days"],
+        "inputs": [
+          {
+            "key": "price_hp",
+            "type": "number",
+            "unit": "EUR/kWh",
+            "label": {
+              "en": "Peak-hour price",
+              "fr": "Prix Heures Pleines",
+              "de": "Preis Hauptzeit",
+              "es": "Precio horas punta"
+            },
+            "description": {
+              "en": "Price incl. taxes, as printed on your price grid or bill.",
+              "fr": "Prix TTC, tel qu'indiqué sur votre grille tarifaire ou votre facture.",
+              "de": "Bruttopreis, wie auf Ihrem Preisblatt oder Ihrer Rechnung angegeben.",
+              "es": "Precio con impuestos, tal como figura en su tarifa o su factura."
+            },
+            "required": true,
+            "default": 0.1977
+          },
+          {
+            "key": "price_hc",
+            "type": "number",
+            "unit": "EUR/kWh",
+            "label": {
+              "en": "Off-peak price",
+              "fr": "Prix Heures Creuses",
+              "de": "Preis Nebenzeit",
+              "es": "Precio horas valle"
+            },
+            "description": {
+              "en": "Price incl. taxes, as printed on your price grid or bill.",
+              "fr": "Prix TTC, tel qu'indiqué sur votre grille tarifaire ou votre facture.",
+              "de": "Bruttopreis, wie auf Ihrem Preisblatt oder Ihrer Rechnung angegeben.",
+              "es": "Precio con impuestos, tal como figura en su tarifa o su factura."
+            },
+            "required": true,
+            "default": 0.1455
+          },
+          {
+            "key": "price_hv",
+            "type": "number",
+            "unit": "EUR/kWh",
+            "label": {
+              "en": "Vigilance-hour price",
+              "fr": "Prix Heures de Vigilance",
+              "de": "Preis Wachsamkeitsstunden",
+              "es": "Precio horas de vigilancia"
+            },
+            "description": {
+              "en": "Price incl. taxes, as printed on your price grid or bill.",
+              "fr": "Prix TTC, tel qu'indiqué sur votre grille tarifaire ou votre facture.",
+              "de": "Bruttopreis, wie auf Ihrem Preisblatt oder Ihrer Rechnung angegeben.",
+              "es": "Precio con impuestos, tal como figura en su tarifa o su factura."
+            },
+            "required": true,
+            "default": 0.6375
+          },
+          {
+            "key": "off_peak_slots",
+            "type": "time_intervals",
+            "default": [["22:00", "06:00"]],
+            "label": {
+              "en": "Off-peak hours",
+              "fr": "Heures creuses",
+              "de": "Nebenzeiten",
+              "es": "Horas valle"
+            },
+            "description": {
+              "en": "Your off-peak slots, set by Enedis for your meter: they are printed on your bill.",
+              "fr": "Vos plages d'heures creuses, fixées par Enedis pour votre compteur : elles figurent sur votre facture.",
+              "de": "Ihre Nebenzeiten, von Enedis für Ihren Zähler festgelegt: Sie stehen auf Ihrer Rechnung.",
+              "es": "Sus franjas de horas valle, fijadas por Enedis para su contador: figuran en su factura."
+            },
+            "required": true
+          },
+          {
+            "key": "subscription",
+            "type": "number",
+            "unit": "EUR/month",
+            "label": {
+              "en": "Monthly subscription",
+              "fr": "Abonnement mensuel",
+              "de": "Monatliche Grundgebühr",
+              "es": "Suscripción mensual"
+            },
+            "description": {
+              "en": "Subscription incl. taxes, per month, for your subscribed power (kVA).",
+              "fr": "Abonnement TTC par mois, pour votre puissance souscrite (kVA).",
+              "de": "Grundgebühr brutto pro Monat für Ihre vertraglich vereinbarte Leistung (kVA).",
+              "es": "Suscripción con impuestos por mes, para su potencia contratada (kVA)."
+            },
+            "required": true,
+            "default": 19.9
+          }
+        ],
+        "tariff": {
+          "tariff_version": 1,
+          "calendars": ["eclair-days"],
+          "components": [
+            {
+              "key": "energy",
+              "kind": "consumption",
+              "label": "Energie",
+              "rules": [
+                {
+                  "label": "HV",
+                  "when": {
+                    "calendar": {
+                      "eclair-days": "eclair"
+                    },
+                    "time": [
+                      ["07:00", "15:00"],
+                      ["18:00", "20:00"]
+                    ]
+                  },
+                  "price": "{{input:price_hv}}"
+                },
+                {
+                  "label": "HC",
+                  "when": {
+                    "time": "{{input:off_peak_slots}}"
+                  },
+                  "price": "{{input:price_hc}}"
+                }
+              ],
+              "fallback": {
+                "label": "HP",
+                "price": "{{input:price_hp}}"
+              }
+            },
+            {
+              "key": "subscription",
+              "kind": "fixed",
+              "label": "Abonnement",
+              "amount": "{{input:subscription}}",
+              "per": "month"
+            }
+          ]
+        }
+      },
+      {
+        "key": "other-base",
+        "name": {
+          "en": "TotalEnergies other offer – Base",
+          "fr": "TotalEnergies autre offre – Base",
+          "de": "TotalEnergies anderes Angebot – Base",
+          "es": "TotalEnergies otra oferta – Base"
+        },
+        "description": {
+          "en": "Any other TotalEnergies offer (Verte Fixe, Standard Fixe, Online, Spéciale…): type the prices of your own grid.",
+          "fr": "Toute autre offre TotalEnergies (Verte Fixe, Standard Fixe, Online, Spéciale…) : saisissez les prix de votre grille.",
+          "de": "Jedes andere TotalEnergies-Angebot (Verte Fixe, Standard Fixe, Online, Spéciale…): Geben Sie die Preise Ihres Preisblatts ein.",
+          "es": "Cualquier otra oferta de TotalEnergies (Verte Fixe, Standard Fixe, Online, Spéciale…): introduzca los precios de su tarifa."
+        },
+        "country": "FR",
+        "currency": "EUR",
+        "timezone": "Europe/Paris",
+        "pricing_mode": "rules",
+        "version": "2026-10-01",
+        "inputs": [
+          {
+            "key": "price_base",
+            "type": "number",
+            "unit": "EUR/kWh",
+            "label": {
+              "en": "Base price",
+              "fr": "Prix du kWh (Base)",
+              "de": "Preis pro kWh (Base)",
+              "es": "Precio del kWh (Base)"
+            },
+            "description": {
+              "en": "Price incl. taxes, as printed on your price grid or bill.",
+              "fr": "Prix TTC, tel qu'indiqué sur votre grille tarifaire ou votre facture.",
+              "de": "Bruttopreis, wie auf Ihrem Preisblatt oder Ihrer Rechnung angegeben.",
+              "es": "Precio con impuestos, tal como figura en su tarifa o su factura."
+            },
+            "required": true
+          },
+          {
+            "key": "subscription",
+            "type": "number",
+            "unit": "EUR/month",
+            "label": {
+              "en": "Monthly subscription",
+              "fr": "Abonnement mensuel",
+              "de": "Monatliche Grundgebühr",
+              "es": "Suscripción mensual"
+            },
+            "description": {
+              "en": "Subscription incl. taxes, per month, for your subscribed power (kVA).",
+              "fr": "Abonnement TTC par mois, pour votre puissance souscrite (kVA).",
+              "de": "Grundgebühr brutto pro Monat für Ihre vertraglich vereinbarte Leistung (kVA).",
+              "es": "Suscripción con impuestos por mes, para su potencia contratada (kVA)."
+            },
+            "required": true
+          }
+        ],
+        "tariff": {
+          "tariff_version": 1,
+          "components": [
+            {
+              "key": "energy",
+              "kind": "consumption",
+              "label": "Energie",
+              "fallback": {
+                "label": "Base",
+                "price": "{{input:price_base}}"
+              }
+            },
+            {
+              "key": "subscription",
+              "kind": "fixed",
+              "label": "Abonnement",
+              "amount": "{{input:subscription}}",
+              "per": "month"
+            }
+          ]
+        }
+      },
+      {
+        "key": "other-hphc",
+        "name": {
+          "en": "TotalEnergies other offer – HP/HC",
+          "fr": "TotalEnergies autre offre – HP/HC",
+          "de": "TotalEnergies anderes Angebot – HT/NT",
+          "es": "TotalEnergies otra oferta – Punta/Valle"
+        },
+        "description": {
+          "en": "Any other TotalEnergies offer (Verte Fixe, Standard Fixe, Online, Spéciale…): type the prices of your own grid.",
+          "fr": "Toute autre offre TotalEnergies (Verte Fixe, Standard Fixe, Online, Spéciale…) : saisissez les prix de votre grille.",
+          "de": "Jedes andere TotalEnergies-Angebot (Verte Fixe, Standard Fixe, Online, Spéciale…): Geben Sie die Preise Ihres Preisblatts ein.",
+          "es": "Cualquier otra oferta de TotalEnergies (Verte Fixe, Standard Fixe, Online, Spéciale…): introduzca los precios de su tarifa."
+        },
+        "country": "FR",
+        "currency": "EUR",
+        "timezone": "Europe/Paris",
+        "pricing_mode": "rules",
+        "version": "2026-10-01",
+        "inputs": [
+          {
+            "key": "price_hp",
+            "type": "number",
+            "unit": "EUR/kWh",
+            "label": {
+              "en": "Peak-hour price",
+              "fr": "Prix Heures Pleines",
+              "de": "Preis Hauptzeit",
+              "es": "Precio horas punta"
+            },
+            "description": {
+              "en": "Price incl. taxes, as printed on your price grid or bill.",
+              "fr": "Prix TTC, tel qu'indiqué sur votre grille tarifaire ou votre facture.",
+              "de": "Bruttopreis, wie auf Ihrem Preisblatt oder Ihrer Rechnung angegeben.",
+              "es": "Precio con impuestos, tal como figura en su tarifa o su factura."
+            },
+            "required": true
+          },
+          {
+            "key": "price_hc",
+            "type": "number",
+            "unit": "EUR/kWh",
+            "label": {
+              "en": "Off-peak price",
+              "fr": "Prix Heures Creuses",
+              "de": "Preis Nebenzeit",
+              "es": "Precio horas valle"
+            },
+            "description": {
+              "en": "Price incl. taxes, as printed on your price grid or bill.",
+              "fr": "Prix TTC, tel qu'indiqué sur votre grille tarifaire ou votre facture.",
+              "de": "Bruttopreis, wie auf Ihrem Preisblatt oder Ihrer Rechnung angegeben.",
+              "es": "Precio con impuestos, tal como figura en su tarifa o su factura."
+            },
+            "required": true
+          },
+          {
+            "key": "off_peak_slots",
+            "type": "time_intervals",
+            "default": [["22:00", "06:00"]],
+            "label": {
+              "en": "Off-peak hours",
+              "fr": "Heures creuses",
+              "de": "Nebenzeiten",
+              "es": "Horas valle"
+            },
+            "description": {
+              "en": "Your off-peak slots, set by Enedis for your meter: they are printed on your bill.",
+              "fr": "Vos plages d'heures creuses, fixées par Enedis pour votre compteur : elles figurent sur votre facture.",
+              "de": "Ihre Nebenzeiten, von Enedis für Ihren Zähler festgelegt: Sie stehen auf Ihrer Rechnung.",
+              "es": "Sus franjas de horas valle, fijadas por Enedis para su contador: figuran en su factura."
+            },
+            "required": true
+          },
+          {
+            "key": "subscription",
+            "type": "number",
+            "unit": "EUR/month",
+            "label": {
+              "en": "Monthly subscription",
+              "fr": "Abonnement mensuel",
+              "de": "Monatliche Grundgebühr",
+              "es": "Suscripción mensual"
+            },
+            "description": {
+              "en": "Subscription incl. taxes, per month, for your subscribed power (kVA).",
+              "fr": "Abonnement TTC par mois, pour votre puissance souscrite (kVA).",
+              "de": "Grundgebühr brutto pro Monat für Ihre vertraglich vereinbarte Leistung (kVA).",
+              "es": "Suscripción con impuestos por mes, para su potencia contratada (kVA)."
+            },
+            "required": true
+          }
+        ],
+        "tariff": {
+          "tariff_version": 1,
+          "components": [
+            {
+              "key": "energy",
+              "kind": "consumption",
+              "label": "Energie",
+              "rules": [
+                {
+                  "label": "HC",
+                  "when": {
+                    "time": "{{input:off_peak_slots}}"
+                  },
+                  "price": "{{input:price_hc}}"
+                }
+              ],
+              "fallback": {
+                "label": "HP",
+                "price": "{{input:price_hp}}"
+              }
+            },
+            {
+              "key": "subscription",
+              "kind": "fixed",
+              "label": "Abonnement",
+              "amount": "{{input:subscription}}",
+              "per": "month"
+            }
+          ]
+        }
+      }
+    ],
+    "calendars": [
+      {
+        "key": "eclair-days",
+        "granularity": "day",
+        "values": ["normal", "eclair"],
+        "timezone": "Europe/Paris"
+      }
+    ]
+  },
+  "scene_triggers": [
+    {
+      "key": "tariff_period_changed",
+      "label": {
+        "en": "Tariff period changed",
+        "fr": "Changement de période tarifaire",
+        "de": "Tarifzeit gewechselt",
+        "es": "Cambio de periodo tarifario"
+      },
+      "description": {
+        "en": "A TotalEnergies contract enters a new period: peak, off-peak, super off-peak or vigilance hours.",
+        "fr": "Un contrat TotalEnergies passe dans une nouvelle période : heures pleines, creuses, super creuses ou de vigilance.",
+        "de": "Ein TotalEnergies-Vertrag wechselt in eine neue Tarifzeit: Haupt-, Neben-, Schwachlastzeit oder Wachsamkeitsstunden.",
+        "es": "Un contrato TotalEnergies entra en un nuevo periodo: horas punta, valle, supervalle o de vigilancia."
+      },
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "Contract",
+            "fr": "Contrat",
+            "de": "Vertrag",
+            "es": "Contrato"
+          }
+        },
+        {
+          "key": "period",
+          "type": "multi_select",
+          "label": {
+            "en": "New period",
+            "fr": "Nouvelle période",
+            "de": "Neue Tarifzeit",
+            "es": "Nuevo periodo"
+          },
+          "options": [
+            {
+              "value": "base",
+              "label": {
+                "en": "Base",
+                "fr": "Base",
+                "de": "Base",
+                "es": "Base"
+              }
+            },
+            {
+              "value": "hp",
+              "label": {
+                "en": "Peak hours",
+                "fr": "Heures pleines",
+                "de": "Hauptzeit",
+                "es": "Horas punta"
+              }
+            },
+            {
+              "value": "hc",
+              "label": {
+                "en": "Off-peak hours",
+                "fr": "Heures creuses",
+                "de": "Nebenzeit",
+                "es": "Horas valle"
+              }
+            },
+            {
+              "value": "hsc",
+              "label": {
+                "en": "Super off-peak hours",
+                "fr": "Heures super creuses",
+                "de": "Schwachlastzeit",
+                "es": "Horas supervalle"
+              }
+            },
+            {
+              "value": "hv",
+              "label": {
+                "en": "Vigilance hours",
+                "fr": "Heures de vigilance",
+                "de": "Wachsamkeitsstunden",
+                "es": "Horas de vigilancia"
+              }
+            }
+          ]
+        }
+      ],
+      "variables": [
+        {
+          "key": "period",
+          "type": "string",
+          "label": {
+            "en": "New period",
+            "fr": "Nouvelle période",
+            "de": "Neue Tarifzeit",
+            "es": "Nuevo periodo"
+          }
+        },
+        {
+          "key": "previous_period",
+          "type": "string",
+          "label": {
+            "en": "Previous period",
+            "fr": "Période précédente",
+            "de": "Vorherige Tarifzeit",
+            "es": "Periodo anterior"
+          }
+        },
+        {
+          "key": "price",
+          "type": "number",
+          "label": {
+            "en": "Price (€/kWh)",
+            "fr": "Prix (€/kWh)",
+            "de": "Preis (€/kWh)",
+            "es": "Precio (€/kWh)"
+          }
+        }
+      ]
+    },
+    {
+      "key": "vigilance_upcoming",
+      "label": {
+        "en": "Vigilance hours soon",
+        "fr": "Heures de vigilance bientôt",
+        "de": "Wachsamkeitsstunden bald",
+        "es": "Horas de vigilancia pronto"
+      },
+      "description": {
+        "en": "Heures Eco+: a vigilance slot starts soon (delay set in the configuration).",
+        "fr": "Heures Eco+ : une plage de vigilance commence bientôt (délai réglé dans la configuration).",
+        "de": "Heures Eco+: Ein Wachsamkeitsfenster beginnt bald (Vorlauf in der Konfiguration einstellbar).",
+        "es": "Heures Eco+: una franja de vigilancia empieza pronto (plazo ajustado en la configuración)."
+      },
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "Contract",
+            "fr": "Contrat",
+            "de": "Vertrag",
+            "es": "Contrato"
+          }
+        }
+      ],
+      "variables": [
+        {
+          "key": "starts_at",
+          "type": "string",
+          "label": {
+            "en": "Start time",
+            "fr": "Heure de début",
+            "de": "Beginn",
+            "es": "Hora de inicio"
+          }
+        },
+        {
+          "key": "ends_at",
+          "type": "string",
+          "label": {
+            "en": "End time",
+            "fr": "Heure de fin",
+            "de": "Ende",
+            "es": "Hora de fin"
+          }
+        },
+        {
+          "key": "minutes_before",
+          "type": "number",
+          "label": {
+            "en": "Minutes before the start",
+            "fr": "Minutes avant le début",
+            "de": "Minuten bis zum Beginn",
+            "es": "Minutos antes del inicio"
+          }
+        }
+      ]
+    },
+    {
+      "key": "eclair_day_announced",
+      "label": {
+        "en": "Éclair day announced",
+        "fr": "Jour Éclair annoncé",
+        "de": "Éclair-Tag angekündigt",
+        "es": "Día Éclair anunciado"
+      },
+      "description": {
+        "en": "Heures Eco+: an Éclair day was declared from the Configuration screen or the dashboard.",
+        "fr": "Heures Eco+ : un jour Éclair a été déclaré depuis l'écran de configuration ou le tableau de bord.",
+        "de": "Heures Eco+: Ein Éclair-Tag wurde über die Konfiguration oder das Dashboard gemeldet.",
+        "es": "Heures Eco+: se ha declarado un día Éclair desde la pantalla de configuración o el panel."
+      },
+      "variables": [
+        {
+          "key": "date",
+          "type": "string",
+          "label": {
+            "en": "Date (YYYY-MM-DD)",
+            "fr": "Date (AAAA-MM-JJ)",
+            "de": "Datum (JJJJ-MM-TT)",
+            "es": "Fecha (AAAA-MM-DD)"
+          }
+        },
+        {
+          "key": "is_tomorrow",
+          "type": "boolean",
+          "label": {
+            "en": "It is tomorrow",
+            "fr": "C'est demain",
+            "de": "Es ist morgen",
+            "es": "Es mañana"
+          }
+        },
+        {
+          "key": "season_count",
+          "type": "number",
+          "label": {
+            "en": "Éclair days this season",
+            "fr": "Jours Éclair de la saison",
+            "de": "Éclair-Tage der Saison",
+            "es": "Días Éclair de la temporada"
+          }
+        }
+      ]
+    }
+  ],
+  "scene_actions": [
+    {
+      "key": "get_current_tariff",
+      "label": {
+        "en": "Read the current tariff",
+        "fr": "Lire le tarif en cours",
+        "de": "Aktuellen Tarif lesen",
+        "es": "Leer la tarifa actual"
+      },
+      "description": {
+        "en": "Current period and price of a TotalEnergies contract, and the next change.",
+        "fr": "Période et prix en cours d'un contrat TotalEnergies, et le prochain changement.",
+        "de": "Aktuelle Tarifzeit und aktueller Preis eines TotalEnergies-Vertrags sowie der nächste Wechsel.",
+        "es": "Periodo y precio actuales de un contrato TotalEnergies, y el próximo cambio."
+      },
+      "timeout_seconds": 10,
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "Contract",
+            "fr": "Contrat",
+            "de": "Vertrag",
+            "es": "Contrato"
+          },
+          "required": true
+        }
+      ],
+      "outputs": [
+        {
+          "key": "found",
+          "type": "boolean",
+          "label": {
+            "en": "Contract found",
+            "fr": "Contrat trouvé",
+            "de": "Vertrag gefunden",
+            "es": "Contrato encontrado"
+          }
+        },
+        {
+          "key": "period",
+          "type": "string",
+          "label": {
+            "en": "Current period",
+            "fr": "Période en cours",
+            "de": "Aktuelle Tarifzeit",
+            "es": "Periodo actual"
+          }
+        },
+        {
+          "key": "price",
+          "type": "number",
+          "label": {
+            "en": "Price (€/kWh)",
+            "fr": "Prix (€/kWh)",
+            "de": "Preis (€/kWh)",
+            "es": "Precio (€/kWh)"
+          }
+        },
+        {
+          "key": "next_period",
+          "type": "string",
+          "label": {
+            "en": "Next period",
+            "fr": "Prochaine période",
+            "de": "Nächste Tarifzeit",
+            "es": "Próximo periodo"
+          }
+        },
+        {
+          "key": "next_change_at",
+          "type": "string",
+          "label": {
+            "en": "Next change (time)",
+            "fr": "Prochain changement (heure)",
+            "de": "Nächster Wechsel (Uhrzeit)",
+            "es": "Próximo cambio (hora)"
+          }
+        },
+        {
+          "key": "eclair_today",
+          "type": "boolean",
+          "label": {
+            "en": "Éclair day today",
+            "fr": "Jour Éclair aujourd'hui",
+            "de": "Heute Éclair-Tag",
+            "es": "Hoy día Éclair"
+          }
+        },
+        {
+          "key": "eclair_tomorrow",
+          "type": "boolean",
+          "label": {
+            "en": "Éclair day tomorrow",
+            "fr": "Jour Éclair demain",
+            "de": "Morgen Éclair-Tag",
+            "es": "Mañana día Éclair"
+          }
+        }
+      ]
+    },
+    {
+      "key": "declare_eclair_day",
+      "label": {
+        "en": "Declare an Éclair day",
+        "fr": "Déclarer un jour Éclair",
+        "de": "Éclair-Tag melden",
+        "es": "Declarar un día Éclair"
+      },
+      "description": {
+        "en": "Heures Eco+: mark today or tomorrow as an Éclair day (e.g. from a scene reading the TotalEnergies text message).",
+        "fr": "Heures Eco+ : marque aujourd'hui ou demain comme jour Éclair (par ex. depuis une scène qui lit le SMS TotalEnergies).",
+        "de": "Heures Eco+: Markiert heute oder morgen als Éclair-Tag (z. B. aus einer Szene, die die TotalEnergies-SMS liest).",
+        "es": "Heures Eco+: marca hoy o mañana como día Éclair (p. ej. desde una escena que lee el SMS de TotalEnergies)."
+      },
+      "timeout_seconds": 15,
+      "fields": [
+        {
+          "key": "day",
+          "type": "select",
+          "label": {
+            "en": "Day",
+            "fr": "Jour",
+            "de": "Tag",
+            "es": "Día"
+          },
+          "required": true,
+          "default": "tomorrow",
+          "options": [
+            {
+              "value": "tomorrow",
+              "label": {
+                "en": "Tomorrow",
+                "fr": "Demain",
+                "de": "Morgen",
+                "es": "Mañana"
+              }
+            },
+            {
+              "value": "today",
+              "label": {
+                "en": "Today",
+                "fr": "Aujourd'hui",
+                "de": "Heute",
+                "es": "Hoy"
+              }
+            }
+          ]
+        }
+      ],
+      "outputs": [
+        {
+          "key": "declared",
+          "type": "boolean",
+          "label": {
+            "en": "Declared",
+            "fr": "Déclaré",
+            "de": "Gemeldet",
+            "es": "Declarado"
+          }
+        },
+        {
+          "key": "date",
+          "type": "string",
+          "label": {
+            "en": "Date (YYYY-MM-DD)",
+            "fr": "Date (AAAA-MM-JJ)",
+            "de": "Datum (JJJJ-MM-TT)",
+            "es": "Fecha (AAAA-MM-DD)"
+          }
+        },
+        {
+          "key": "season_count",
+          "type": "number",
+          "label": {
+            "en": "Éclair days this season",
+            "fr": "Jours Éclair de la saison",
+            "de": "Éclair-Tage der Saison",
+            "es": "Días Éclair de la temporada"
+          }
+        }
+      ]
+    }
+  ],
+  "widgets": [
+    {
+      "key": "tariff_status",
+      "label": {
+        "en": "TotalEnergies tariff",
+        "fr": "Tarif TotalEnergies",
+        "de": "TotalEnergies-Tarif",
+        "es": "Tarifa TotalEnergies"
+      },
+      "description": {
+        "en": "Current period and price, next change, price over the next 24 hours.",
+        "fr": "Période et prix en cours, prochain changement, prix sur les 24 prochaines heures.",
+        "de": "Aktuelle Tarifzeit und Preis, nächster Wechsel, Preis der nächsten 24 Stunden.",
+        "es": "Periodo y precio actuales, próximo cambio, precio de las próximas 24 horas."
+      },
+      "icon": "zap",
+      "action_timeout_seconds": 15,
+      "settings": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": {
+            "en": "Contract",
+            "fr": "Contrat",
+            "de": "Vertrag",
+            "es": "Contrato"
+          },
+          "description": {
+            "en": "Empty: the first active TotalEnergies contract.",
+            "fr": "Vide : le premier contrat TotalEnergies actif.",
+            "de": "Leer: der erste aktive TotalEnergies-Vertrag.",
+            "es": "Vacío: el primer contrato TotalEnergies activo."
+          }
+        }
+      ]
+    },
+    {
+      "key": "eclair_days",
+      "label": {
+        "en": "Éclair days",
+        "fr": "Jours Éclair",
+        "de": "Éclair-Tage",
+        "es": "Días Éclair"
+      },
+      "description": {
+        "en": "Heures Eco+: Éclair days of the season, and buttons to declare or cancel one.",
+        "fr": "Heures Eco+ : jours Éclair de la saison, et boutons pour en déclarer ou en annuler un.",
+        "de": "Heures Eco+: Éclair-Tage der Saison und Schaltflächen zum Melden oder Zurücknehmen.",
+        "es": "Heures Eco+: días Éclair de la temporada, y botones para declarar o anular uno."
+      },
+      "icon": "alert-triangle",
+      "action_timeout_seconds": 15
+    }
+  ]
+}
