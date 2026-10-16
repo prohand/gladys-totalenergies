@@ -8,8 +8,8 @@
     "de": "TotalEnergies-Stromangebote: Verträge, Tarifzeiten, Preise und Éclair-Tage.",
     "es": "Ofertas de electricidad TotalEnergies: contratos, periodos tarifarios, precios y días Éclair."
   },
-  "version": "0.0.0",
-  "docker_image": "ghcr.io/prohand/gladys-totalenergies:0.0.0",
+  "version": "0.0.1",
+  "docker_image": "ghcr.io/prohand/gladys-totalenergies:0.0.1",
   "gladys_version": ">=5.2.0",
   "cover_image": "https://raw.githubusercontent.com/prohand/gladys-totalenergies/main/cover.png",
   "categories": ["energy"],
