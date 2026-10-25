@@ -13,7 +13,7 @@ JavaScript template; its workflows mirror `prohand/gladys-devmel`.
 It declares TotalEnergies contract templates (`energy_contracts`) for the
 Gladys energy monitoring, feeds the `eclair-days` tariff calendar (Heures
 Eco+), publishes one device per contract (kWh price + tariff period), and adds
-scene triggers, scene actions and two dashboard widgets (Gladys 5.2+).
+scene triggers, scene actions and two dashboard widgets (Gladys 5.3+).
 
 ## Commands
 
@@ -78,7 +78,8 @@ src/widgets.js         dashboard widgets
 `test/manifest.test.js` ties the manifest to the code: handlers for every
 action, scene action and widget, the triggers the service fires, the period
 options, the template placeholders, `DEFAULT_CONFIG`, the four languages, and
-`gladys_version >= 5.2.0` (energy contracts).
+`gladys_version >= 5.3.0` (energy contracts need 5.2.0; `keywords` and
+`countries`, `["FR"]`, need 5.3.0).
 
 ## Rules
 

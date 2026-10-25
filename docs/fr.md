@@ -13,7 +13,7 @@ compte TotalEnergies n'est nécessaire** et rien ne sort de votre réseau.
 > pré-remplis viennent de la grille publique du 1er octobre 2026 (9 kVA, TTC) :
 > vérifiez-les toujours sur votre facture.
 
-Gladys 5.2 ou plus récent est nécessaire.
+Gladys 5.3 ou plus récent est nécessaire.
 
 ## Les offres disponibles
 

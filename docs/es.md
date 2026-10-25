@@ -13,7 +13,7 @@ ninguna cuenta TotalEnergies** y nada sale de su red.
 > rellenados vienen de la tarifa pública del 1 de octubre de 2026 (9 kVA, con
 > impuestos): compruébelos siempre en su factura.
 
-Requiere Gladys 5.2 o posterior.
+Requiere Gladys 5.3 o posterior.
 
 ## Ofertas disponibles
 

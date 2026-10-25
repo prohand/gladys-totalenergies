@@ -13,7 +13,7 @@ TotalEnergies-Konto ist nicht nötig**, und nichts verlässt Ihr Netzwerk.
 > Preise stammen aus dem öffentlichen Preisblatt vom 1. Oktober 2026 (9 kVA,
 > brutto): Prüfen Sie sie immer anhand Ihrer Rechnung.
 
-Erfordert Gladys 5.2 oder neuer.
+Erfordert Gladys 5.3 oder neuer.
 
 ## Verfügbare Angebote
 

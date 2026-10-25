@@ -13,7 +13,7 @@ TotalEnergies account is needed** and nothing leaves your network.
 > prices come from the public grid of 1 October 2026 (9 kVA, incl. taxes):
 > always check them against your bill.
 
-Requires Gladys 5.2 or later.
+Requires Gladys 5.3 or later.
 
 ## Available offers
 

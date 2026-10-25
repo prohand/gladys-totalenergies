@@ -43,7 +43,29 @@ const MIN_GLADYS_VERSION = {
   scene_triggers: [5, 1, 0],
   scene_actions: [5, 1, 0],
   energy_contracts: [5, 2, 0],
+  keywords: [5, 3, 0],
+  countries: [5, 3, 0],
 };
+
+// The store vocabulary of catalog shelves (2026-10: transport, vehicles, servers, leisure added).
+const CATALOG_CATEGORIES = [
+  'climate',
+  'lighting',
+  'energy',
+  'security',
+  'multimedia',
+  'appliances',
+  'environment',
+  'protocols',
+  'network',
+  'notifications',
+  'assistants',
+  'services',
+  'transport',
+  'vehicles',
+  'servers',
+  'leisure',
+];
 
 function minGladysVersion() {
   const match = manifest.gladys_version.match(/>=\s*(\d+)\.(\d+)\.(\d+)/);
@@ -68,6 +90,28 @@ test('every declared field is accepted by the minimum Gladys version', () => {
       `${field} requires gladys_version >= ${required.join('.')}, got "${manifest.gladys_version}"`,
     );
   }
+});
+
+test('the catalog categories are 1 to 3 keys of the store vocabulary', () => {
+  assert.ok(manifest.categories.length >= 1 && manifest.categories.length <= 3);
+  assert.equal(new Set(manifest.categories).size, manifest.categories.length);
+  for (const category of manifest.categories) {
+    assert.ok(CATALOG_CATEGORIES.includes(category), `unknown category "${category}"`);
+  }
+});
+
+test('the search keywords are 1 to 10 unique terms of 2 to 30 characters', () => {
+  const { keywords } = manifest;
+  assert.ok(Array.isArray(keywords) && keywords.length >= 1 && keywords.length <= 10);
+  const normalized = keywords.map((keyword) => keyword.trim().toLowerCase());
+  assert.equal(new Set(normalized).size, keywords.length, 'keywords are unique');
+  for (const keyword of normalized) {
+    assert.ok(keyword.length >= 2 && keyword.length <= 30, `"${keyword}": 2 to 30 characters`);
+  }
+});
+
+test('the integration is declared for France only, like its contract templates', () => {
+  assert.deepEqual(manifest.countries, ['FR']);
 });
 
 test('every manifest action has a handler, and vice versa', () => {
