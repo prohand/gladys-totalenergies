@@ -1,6 +1,6 @@
 {
   "name": "gladys-totalenergies",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "private": true,
   "description": "Gladys Assistant external integration for TotalEnergies electricity offers: contract templates, tariff periods, Éclair days.",
   "type": "module",
