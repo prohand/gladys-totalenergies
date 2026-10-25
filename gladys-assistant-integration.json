@@ -10,9 +10,22 @@
   },
   "version": "0.0.2",
   "docker_image": "ghcr.io/prohand/gladys-totalenergies:0.0.2",
-  "gladys_version": ">=5.2.0",
+  "gladys_version": ">=5.3.0",
   "cover_image": "https://raw.githubusercontent.com/prohand/gladys-totalenergies/main/cover.png",
   "categories": ["energy"],
+  "keywords": [
+    "total",
+    "direct energie",
+    "heures eco",
+    "charge'heures",
+    "fixe 2 ans",
+    "heures creuses",
+    "voiture électrique",
+    "linky",
+    "tarif",
+    "fournisseur d'électricité"
+  ],
+  "countries": ["FR"],
   "transports": ["local"],
   "config_schema": [
     {

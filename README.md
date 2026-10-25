@@ -10,7 +10,8 @@ Built on the official
 [JavaScript integration template](https://github.com/GladysAssistant/integration-template-js)
 and the SDK
 [`@gladysassistant/integration-sdk`](https://github.com/GladysAssistant/integration-sdk-js)
-(0.15). Requires **Gladys 5.2** or later (energy contracts).
+(0.16). Requires **Gladys 5.3** or later (energy contracts need 5.2, the store
+keywords and countries 5.3).
 
 User documentation: [English](./docs/en.md) · [Français](./docs/fr.md) ·
 [Deutsch](./docs/de.md) · [Español](./docs/es.md).

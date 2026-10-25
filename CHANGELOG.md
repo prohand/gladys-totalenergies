@@ -10,6 +10,17 @@ the notes of the version's GitHub Release.
 
 ## [Unreleased]
 
+### Added
+
+- Store catalog: search keywords (Heures Eco, Charge'Heures, Fixe 2 ans, Direct Énergie,
+  heures creuses…) and the country (France), so the integration is easier to find and is
+  listed for French installations.
+
+### Changed
+
+- Gladys 5.3.0 or later is now required (keywords and countries in the store catalog).
+- Gladys integration SDK 0.16.
+
 ## [0.0.2] - 2026-10-23
 
 - Maintenance release, no functional change.
