@@ -110,12 +110,30 @@ calentador de agua; cuando pase a `hp`, apagarlo._
 - **Días Éclair** — días Éclair de la temporada (x/20), el próximo, y botones
   para declarar o anular uno.
 
+## Cambio de precio
+
+Cuando TotalEnergies cambia sus precios, conserve el contrato antiguo para el
+historial y cree uno nuevo, incluso a posteriori:
+
+1. En **Energía > Contratos**, ponga una **fecha de fin** al contrato antiguo:
+   el día anterior al cambio (por ejemplo el 18/10 para un precio desde el
+   19/10).
+2. Cree un **nuevo contrato** con la misma plantilla TotalEnergies, una **fecha
+   de inicio** el día del cambio y los nuevos precios.
+3. Vincúlelo al mismo contador.
+4. En la pestaña **Descubrimiento** de la integración, añada el dispositivo del
+   nuevo contrato y elimine el del antiguo.
+
+Los costes anteriores al cambio conservan el precio antiguo. Si los costes ya
+calculados desde la fecha del cambio siguen con el precio antiguo, vuelva a
+lanzar su cálculo desde el seguimiento de energía de Gladys.
+
 ## Conviene saber
 
 - El precio mostrado es el precio del kWh con impuestos introducido en el
   contrato; Gladys añade la suscripción a sus costes por sí mismo.
 - Los precios de TotalEnergies cambian (hasta dos veces al año en algunas
-  ofertas): actualice el contrato en **Energía > Contratos**.
+  ofertas): actualice el contrato (vea [Cambio de precio](#cambio-de-precio)).
 
 ## Solución de problemas
 

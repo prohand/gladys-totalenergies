@@ -115,13 +115,31 @@ Warmwasserbereiter einschalten; wenn sie zu `hp` wird, ausschalten._
 - **Éclair-Tage** — Éclair-Tage der Saison (x/20), der nächste, und
   Schaltflächen zum Melden oder Zurücknehmen.
 
+## Preisänderung
+
+Wenn TotalEnergies seine Preise ändert, behalten Sie den alten Vertrag für den
+Verlauf und legen Sie einen neuen an, auch nachträglich:
+
+1. Geben Sie dem alten Vertrag unter **Energie > Verträge** ein **Enddatum**:
+   den Tag vor der Änderung (zum Beispiel den 18.10. für einen Preis ab dem
+   19.10.).
+2. Legen Sie einen **neuen Vertrag** mit derselben TotalEnergies-Vorlage an,
+   mit dem Tag der Änderung als **Startdatum** und den neuen Preisen.
+3. Verknüpfen Sie ihn mit demselben Zähler.
+4. Fügen Sie im Reiter **Erkennung** der Integration das Gerät des neuen
+   Vertrags hinzu und löschen Sie das des alten.
+
+Die Kosten vor der Änderung behalten den alten Preis. Wenn bereits berechnete
+Kosten seit dem Datum der Änderung noch den alten Preis verwenden, starten Sie
+ihre Berechnung in der Energieüberwachung von Gladys neu.
+
 ## Gut zu wissen
 
 - Der angezeigte Preis ist der im Vertrag eingegebene kWh-Bruttopreis; die
   Grundgebühr rechnet Gladys selbst in die Kosten ein.
 - Die Preise von TotalEnergies ändern sich (bei manchen Angeboten bis zu
   zweimal im Jahr): Aktualisieren Sie den Vertrag unter **Energie >
-  Verträge**.
+  Verträge** (siehe [Preisänderung](#preisänderung)).
 
 ## Fehlerbehebung
 

@@ -112,12 +112,29 @@ chauffe-eau ; quand elle passe à `hp`, l'éteindre._
 - **Jours Éclair** — jours Éclair de la saison (x/20), prochain jour, et
   boutons pour en déclarer ou en annuler un.
 
+## Changement de prix
+
+Quand TotalEnergies change ses prix, gardez l'ancien contrat pour l'historique
+et créez-en un nouveau, même après coup :
+
+1. Dans **Énergie > Contrats**, mettez une **date de fin** à l'ancien contrat :
+   la veille du changement (par exemple le 18/10 pour un prix au 19/10).
+2. Créez un **nouveau contrat** avec le même modèle TotalEnergies, une **date
+   de début** au jour du changement et les nouveaux prix.
+3. Liez-le au même compteur.
+4. Dans l'onglet **Découverte** de l'intégration, ajoutez l'appareil du
+   nouveau contrat et supprimez celui de l'ancien.
+
+Les coûts avant le changement gardent l'ancien prix. Si des coûts déjà
+calculés depuis la date du changement gardent l'ancien prix, relancez leur
+calcul depuis le suivi de l'énergie de Gladys.
+
 ## Bon à savoir
 
 - Le prix affiché est le prix du kWh TTC saisi dans le contrat ; Gladys
   ajoute lui-même l'abonnement dans ses coûts.
 - Les prix TotalEnergies changent (jusqu'à deux fois par an pour certaines
-  offres) : mettez à jour le contrat dans **Énergie > Contrats**.
+  offres) : mettez à jour le contrat (voir [Changement de prix](#changement-de-prix)).
 
 ## Dépannage
 
