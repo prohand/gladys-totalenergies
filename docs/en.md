@@ -108,12 +108,29 @@ on; when it becomes `hp`, turn it off._
 - **Éclair days** — Éclair days of the season (x/20), the next one, and
   buttons to declare or cancel one.
 
+## Price change
+
+When TotalEnergies changes its prices, keep the old contract for the history
+and create a new one, even after the fact:
+
+1. In **Energy > Contracts**, give the old contract an **end date**: the day
+   before the change (for example 18/10 for a price from 19/10).
+2. Create a **new contract** with the same TotalEnergies template, a **start
+   date** on the day of the change and the new prices.
+3. Link it to the same meter.
+4. In the **Discovery** tab of the integration, add the device of the new
+   contract and delete the one of the old contract.
+
+The costs before the change keep the old price. If costs already computed
+since the date of the change still use the old price, run their computation
+again from the Gladys energy monitoring.
+
 ## Good to know
 
 - The price shown is the kWh price (incl. taxes) typed in the contract;
   Gladys adds the subscription to its costs itself.
 - TotalEnergies prices change (up to twice a year for some offers): update
-  the contract in **Energy > Contracts**.
+  the contract (see [Price change](#price-change)).
 
 ## Troubleshooting
 

@@ -10,6 +10,9 @@ the notes of the version's GitHub Release.
 
 ## [Unreleased]
 
+- Docs: new « Price change » section explaining how to apply a TotalEnergies
+  price change, retroactive included (end the old contract, start a new one).
+
 ## [0.1.3] - 2026-11-16
 
 - Maintenance release, no functional change.
