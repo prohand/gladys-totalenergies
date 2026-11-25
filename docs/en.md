@@ -123,3 +123,40 @@ on; when it becomes `hp`, turn it off._
 - **The price never moves**: the device must be added from Discovery to
   receive its values.
 - Read the integration logs from Gladys (or `docker logs`) for the details.
+
+## Gas contract (Gazpar)
+
+The **Base** templates also work for a fixed-price gas offer: everything is
+in kWh. Gladys computes the cost from a **kWh index** on the meter linked to
+the contract. But the Gazpar integration publishes an index in **m³**, once a
+day. So you go through an MQTT meter, fed by a scene.
+
+1. In **Integrations > MQTT**, create a device with an **index** feature
+   (Energy category, in kWh). Click **Create features** (« Energy monitoring »
+   block), then **Save**.
+2. Link your TotalEnergies contract to this MQTT meter.
+3. Create a scene:
+   - Trigger: the « Meter index » of the Gazpar device changes value.
+   - Action **Set a variable**, **Calculated** mode:
+     `{{triggerEvent.last_value}} * 11.2` (your conversion coefficient, with
+     a dot, not a comma).
+   - Action **Send an MQTT message**: the index topic, shown on the MQTT
+     device card (`gladys/master/device/<device>/feature/<index>/state`), and
+     as message the variable of the previous step (type `{{` to pick it).
+4. In the **Energy consumption** widget, pick the cost of this meter and
+   tick **Show subscription**.
+
+Good to know:
+
+- **Coefficient**: take an average value from your bill (around 11) and
+  **never change it**. The scene multiplies the whole index: going from 11.20
+  to 11.25 on a 5,000 m³ index would make a 250 kWh jump at once.
+- If the Gazpar index is already in kWh, skip the variable and send
+  `{{triggerEvent.last_value}}` directly.
+- The first value is the starting point: consumption shows from the next
+  value (the next day).
+- GRDF sends one value a day, often the day after: the whole day falls into
+  a single 30-minute slot. Daily and monthly totals are right, the hourly
+  detail means nothing.
+- Past history is not recovered: the scene only sends new values. After
+  that, Gladys computes the new days by itself.

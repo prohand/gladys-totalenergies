@@ -125,3 +125,43 @@ calentador de agua; cuando pase a `hp`, apagarlo._
 - **El precio no cambia nunca**: hay que añadir el dispositivo desde
   Descubrimiento para que reciba sus valores.
 - Consulte los registros de la integración desde Gladys (o `docker logs`).
+
+## Contrato de gas (Gazpar)
+
+Las plantillas **Base** sirven también para una oferta de gas a precio fijo:
+todo está en kWh. Gladys calcula el coste a partir de un **índice en kWh** del
+contador asociado al contrato. Pero la integración Gazpar publica un índice
+en **m³**, una vez al día. Por eso se pasa por un contador MQTT, alimentado
+por una escena.
+
+1. En **Integraciones > MQTT**, cree un dispositivo con una función
+   **índice** (categoría Energía, en kWh). Pulse **Crear las funciones**
+   (bloque « Seguimiento energético »), y luego **Guardar**.
+2. Asocie su contrato TotalEnergies a este contador MQTT.
+3. Cree una escena:
+   - Disparador: el « Índice del contador » del dispositivo Gazpar cambia de
+     valor.
+   - Acción **Definir una variable**, modo **Calculado**:
+     `{{triggerEvent.last_value}} * 11.2` (su coeficiente de conversión, con
+     punto y no con coma).
+   - Acción **Enviar un mensaje MQTT**: el topic del índice, que aparece en
+     la ficha del dispositivo MQTT
+     (`gladys/master/device/<dispositivo>/feature/<índice>/state`), y como
+     mensaje la variable del paso anterior (escriba `{{` para elegirla).
+4. En el widget **Consumo de energía**, elija el coste de este contador y
+   marque **Mostrar la suscripción**.
+
+Conviene saber:
+
+- **Coeficiente**: tome un valor medio de su factura (alrededor de 11) y **no
+  lo cambie después**. La escena multiplica el índice completo: pasar de
+  11,20 a 11,25 en un índice de 5.000 m³ daría un salto de 250 kWh de golpe.
+- Si el índice Gazpar ya está en kWh, omita la variable y envíe directamente
+  `{{triggerEvent.last_value}}`.
+- El primer valor sirve de punto de partida: el consumo aparece a partir del
+  valor siguiente (al día siguiente).
+- GRDF envía un valor al día, a menudo al día siguiente: todo el día cae en
+  una sola franja de 30 minutos. Los totales diarios y mensuales son
+  correctos, el detalle por hora no tiene sentido.
+- El historial pasado no se recupera: la escena solo envía los valores
+  nuevos. Después, Gladys calcula los días nuevos por sí mismo.

@@ -10,6 +10,10 @@ the notes of the version's GitHub Release.
 
 ## [Unreleased]
 
+- Docs: new « Gas contract (Gazpar) » section: use a Base template for a
+  fixed-price gas offer, and feed a kWh MQTT index from the Gazpar m³ index
+  with a scene.
+
 ## [0.1.3] - 2026-11-16
 
 - Maintenance release, no functional change.

@@ -131,3 +131,44 @@ Warmwasserbereiter einschalten; wenn sie zu `hp` wird, ausschalten._
 - **Der Preis ändert sich nie**: Das Gerät muss aus der Erkennung hinzugefügt
   werden, um seine Werte zu erhalten.
 - Die Logs der Integration in Gladys (oder `docker logs`) zeigen die Details.
+
+## Gasvertrag (Gazpar)
+
+Die **Base**-Vorlagen passen auch für ein Gasangebot mit Festpreis: Alles
+ist in kWh. Gladys berechnet die Kosten aus einem **Zählerstand in kWh** des
+Zählers, dem der Vertrag zugeordnet ist. Die Gazpar-Integration liefert aber
+einen Zählerstand in **m³**, einmal pro Tag. Daher der Weg über einen
+MQTT-Zähler, den eine Szene füttert.
+
+1. Legen Sie unter **Integrationen > MQTT** ein Gerät mit einer Funktion
+   **Zählerstand** an (Kategorie Energie, in kWh). Klicken Sie auf
+   **Funktionen erstellen** (Block „Energieüberwachung“), dann auf
+   **Speichern**.
+2. Ordnen Sie Ihren TotalEnergies-Vertrag diesem MQTT-Zähler zu.
+3. Legen Sie eine Szene an:
+   - Auslöser: der „Zählerstand“ des Gazpar-Geräts ändert seinen Wert.
+   - Aktion **Variable setzen**, Modus **Berechnet**:
+     `{{triggerEvent.last_value}} * 11.2` (Ihr Umrechnungsfaktor, mit Punkt,
+     nicht mit Komma).
+   - Aktion **MQTT-Nachricht senden**: das Topic des Zählerstands, das auf
+     der Karte des MQTT-Geräts steht
+     (`gladys/master/device/<gerät>/feature/<zählerstand>/state`), und als
+     Nachricht die Variable aus dem vorigen Schritt (`{{` tippen, um sie zu
+     wählen).
+4. Wählen Sie im Widget **Energieverbrauch** die Kosten dieses Zählers und
+   aktivieren Sie **Grundgebühr anzeigen**.
+
+Gut zu wissen:
+
+- **Umrechnungsfaktor**: Nehmen Sie einen Mittelwert von Ihrer Rechnung (um 11) und **ändern Sie ihn danach nicht mehr**. Die Szene multipliziert den
+  ganzen Zählerstand: Von 11,20 auf 11,25 bei 5.000 m³ ergäbe auf einen
+  Schlag einen Sprung von 250 kWh.
+- Ist der Gazpar-Zählerstand schon in kWh, lassen Sie die Variable weg und
+  senden Sie direkt `{{triggerEvent.last_value}}`.
+- Der erste Wert ist der Ausgangspunkt: Der Verbrauch erscheint ab dem
+  nächsten Wert (am Folgetag).
+- GRDF sendet einen Wert pro Tag, oft am Folgetag: Der ganze Tag landet in
+  einem einzigen 30-Minuten-Intervall. Tages- und Monatssummen stimmen, die
+  stündliche Aufteilung ist bedeutungslos.
+- Die Vergangenheit wird nicht übernommen: Die Szene sendet nur neue Werte.
+  Danach berechnet Gladys die neuen Tage selbst.

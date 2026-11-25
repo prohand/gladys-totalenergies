@@ -128,3 +128,42 @@ chauffe-eau ; quand elle passe à `hp`, l'éteindre._
   Découverte pour recevoir ses valeurs.
 - Consultez les logs de l'intégration depuis Gladys (ou `docker logs`) pour
   le détail.
+
+## Contrat gaz (Gazpar)
+
+Les modèles **Base** marchent aussi pour une offre gaz à prix fixe : tout
+est en kWh. Gladys calcule le coût à partir d'un **index en kWh** sur le
+compteur lié au contrat. Or l'intégration Gazpar publie un index en **m³**,
+une fois par jour. On passe donc par un compteur MQTT, alimenté par une
+scène.
+
+1. Dans **Intégrations > MQTT**, créez un appareil avec une fonctionnalité
+   **index** (catégorie Énergie, en kWh). Cliquez sur **Créer les
+   fonctionnalités** (bloc « Suivi énergétique »), puis **Enregistrer**.
+2. Liez votre contrat TotalEnergies à ce compteur MQTT.
+3. Créez une scène :
+   - Déclencheur : « Index compteur » de l'appareil Gazpar change de valeur.
+   - Action **Définir une variable**, mode **Calculée** :
+     `{{triggerEvent.last_value}} * 11.2` (votre coefficient de conversion,
+     avec un point et pas une virgule).
+   - Action **Envoyer un message MQTT** : le topic de l'index, affiché sur
+     la fiche de l'appareil MQTT
+     (`gladys/master/device/<appareil>/feature/<index>/state`), et comme
+     message la variable de l'étape précédente (tapez `{{` pour la choisir).
+4. Dans le widget **Consommation d'énergie**, choisissez le coût de ce
+   compteur et cochez **Afficher l'abonnement**.
+
+Bon à savoir :
+
+- **Coefficient** : prenez une valeur moyenne de votre facture (autour de 11) et **ne la changez plus**. La scène multiplie l'index complet : passer
+  de 11,20 à 11,25 sur un index de 5 000 m³ ferait un saut de 250 kWh d'un
+  coup.
+- Si l'index Gazpar est déjà en kWh, sautez la variable et envoyez
+  directement `{{triggerEvent.last_value}}`.
+- La première valeur sert de point de départ : la consommation apparaît à
+  partir de la valeur suivante (le lendemain).
+- GRDF envoie une valeur par jour, souvent le lendemain : toute la journée
+  tombe dans un seul créneau de 30 minutes. Les totaux par jour et par mois
+  sont justes, le détail heure par heure n'a pas de sens.
+- L'historique passé n'est pas repris : la scène n'envoie que les nouvelles
+  valeurs. Ensuite, Gladys calcule seul les nouveaux jours.
